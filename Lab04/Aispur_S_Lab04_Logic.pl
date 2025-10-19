@@ -91,11 +91,13 @@ find_path(X, Y, Path) :-
 % ---------------------------------------------------------------------------
 % 8. SUMMARY OF REASONING IMPLEMENTATION
 % ---------------------------------------------------------------------------
-% The agent uses graph facts (edges and blocked paths) to decide possible moves.
-% Reasoning rules (can_move/2 and reason/3) determine if a move is possible and why.
-% Recursive traversal (move/4) explores the graph, using a visited list to prevent loops.
-% At each step, explanations are printed using format/2, showing the agent's decision process.
-% The main predicate (find_path/3) ties everything together, providing a full trace and the path.
+% The way the agent works is by checking the graph’s connections and any blocked paths to figure out which moves are actually possible. It doesn’t just jump from one node to another; instead, it uses special rules—like can_move/2 and reason/3—to see if a move makes sense and to understand why it’s allowed or not.
+
+% As the agent tries to get from one place to another, it keeps calling the move/4 predicate over and over, kind of like retracing its steps, but it also remembers where it’s already been so it doesn’t end up going in circles. This visited list is super important for avoiding infinite loops.
+
+% Every time the agent picks a move or rejects one, it actually explains that choice out loud (well, prints it using format/2), so you can follow its reasoning as it goes. You get to see the whole process, almost like you’re looking over the agent’s shoulder.
+
+% At the end, everything comes together in the find_path/3 predicate. This is the main piece that shows the step-by-step trace of the agent’s thinking and the actual path it found through the graph.
 
 % ---------------------------------------------------------------------------
 % END OF LAB
