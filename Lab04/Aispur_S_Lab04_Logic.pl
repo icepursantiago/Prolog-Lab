@@ -1,55 +1,35 @@
-% Lab04: Maze Reasoning Agent in Prolog
+% Lab04: Maze Path Reasoning in Prolog
 % Author: Aispur Santiago
 % Date: 2025-10-19
 
 % ---------------------------------------------------------------------------
-% 1. INTRODUCTION
+% 1. MAZE REPRESENTATION
 % ---------------------------------------------------------------------------
-% This lab brings together all the main Prolog concepts learned so far:
-% facts, rules, recursion, lists, graph traversal, and reasoning.
-% The goal is to build an intelligent agent that can navigate a maze,
-% find a path, and explain its reasoning in human-readable form.
-
-% ---------------------------------------------------------------------------
-% 2. OBJECTIVES
-% ---------------------------------------------------------------------------
-% - Represent a maze as a graph.
-% - Use reasoning rules to decide moves.
-% - Apply recursion to find a path.
-% - Generate explanations as the program runs.
-
-% ---------------------------------------------------------------------------
-% 3. BACKGROUND
-% ---------------------------------------------------------------------------
-% 3.1 Graphs in Prolog
-% A maze is modeled as a graph where rooms are nodes and doors are edges.
-
-% Example maze edges (rooms and connections):
+% The maze is modeled as a graph. Rooms are nodes, doors are edges.
 edge(entrance, a).
 edge(a, b).
 edge(a, c).
 edge(b, exit).
 edge(c, b).
 
-% Some paths may be blocked:
-blocked(a, c). % Door is blocked from a to c.
+% Some doors may be blocked:
+blocked(a, c).  % Door is blocked from a to c.
 
 % ---------------------------------------------------------------------------
-% 4. REASONING PREDICATES
+% 2. REASONING RULES
 % ---------------------------------------------------------------------------
-% Movement reasoning rules:
+% A move is allowed if there is an edge and it is not blocked.
 can_move(X, Y) :- edge(X, Y), \+ blocked(X, Y).
 
-% Reasoning predicate to explain why a path is open or blocked:
+% Reasoning predicate: explains if a path is open or blocked.
 reason(X, Y, 'path is open') :- can_move(X, Y).
 reason(X, Y, 'path is blocked') :- blocked(X, Y).
-% Optional extension: explain when the destination is reached
-reason(_, exit, 'destination reached').
+reason(_, exit, 'destination reached').  % Optional: explanation for exit
 
 % ---------------------------------------------------------------------------
-% 5. RECURSIVE TRAVERSAL WITH EXPLANATION
+% 3. RECURSIVE TRAVERSAL WITH EXPLANATION
 % ---------------------------------------------------------------------------
-% move(X, Y, Visited, Path): recursively explores moves from X to Y, printing explanations.
+% move(X, Y, Visited, Path): recursively finds a path and prints reasoning.
 move(X, Y, Visited, [Y|Visited]) :-
     can_move(X, Y),
     format('Moving from ~w to ~w.~n', [X, Y]).
@@ -60,17 +40,17 @@ move(X, Y, Visited, Path) :-
     move(Z, Y, [Z|Visited], Path).
 
 % ---------------------------------------------------------------------------
-% 6. MAIN PREDICATE
+% 4. MAIN PATH FINDER
 % ---------------------------------------------------------------------------
-% find_path(X, Y, Path): finds a path from X to Y and prints reasoning at each step.
+% find_path(X, Y, Path): finds a path from X to Y, prints explanations.
 find_path(X, Y, Path) :-
     move(X, Y, [X], RevPath),
     reverse(RevPath, Path).
 
 % ---------------------------------------------------------------------------
-% 7. EXAMPLE EXECUTION
+% 5. EXAMPLE QUERIES AND COMMENTS
 % ---------------------------------------------------------------------------
-% Example query to run in the Prolog compiler:
+% Example query to try in Prolog:
 % ?- find_path(entrance, exit, Path).
 % Output:
 % Moving from entrance to a.
@@ -78,7 +58,7 @@ find_path(X, Y, Path) :-
 % Moving from b to exit.
 % Path = [entrance, a, b, exit].
 
-% You can test reasoning predicates separately, e.g.:
+% Test individual reasoning:
 % ?- can_move(a, b).
 % true.
 % ?- can_move(a, c).
@@ -89,7 +69,7 @@ find_path(X, Y, Path) :-
 % R = 'path is blocked'.
 
 % ---------------------------------------------------------------------------
-% 8. SUMMARY OF REASONING IMPLEMENTATION
+% 6. REASONING SUMMARY
 % ---------------------------------------------------------------------------
 % The way the agent works is by checking the graph’s connections and any blocked paths to figure out which moves are actually possible. It doesn’t just jump from one node to another; instead, it uses special rules—like can_move/2 and reason/3—to see if a move makes sense and to understand why it’s allowed or not.
 
